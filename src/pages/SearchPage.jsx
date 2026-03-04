@@ -43,35 +43,37 @@ function SearchPage() {
     <div className="page">
       <h1>Rick and Morty Character Search</h1>
 
-      <div className="search-bar">
+      <form className="search-bar" onSubmit={(e) => { e.preventDefault(); handleSearch() }}>
         <input
           type="text"
           placeholder="Search a character..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <button onClick={handleSearch}>Search</button>
-      </div>
+        <button type="submit">Search</button>
+      </form>
 
       {loading && <p>Loading...</p>}
       {error && <p className="error">{error}</p>}
 
-      <ul className="character-list">
-        {characters.map((character) => (
-          <li
-            key={character.id}
-            className="character-item"
-            onClick={() => navigate(`/character/${character.id}`)}
-          >
-            <img src={character.image} alt={character.name} />
-            <div className="character-info">
-              <strong>{character.name}</strong>
-              <span>{character.species}</span>
-              <span>{character.status}</span>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {characters.length > 0 && (
+        <ul className="character-list">
+          {characters.map((character) => (
+            <li
+              key={character.id}
+              className="character-item"
+              onClick={() => navigate(`/character/${character.id}`)}
+            >
+              <img src={character.image} alt={character.name} />
+              <div className="character-info">
+                <strong>{character.name}</strong>
+                <span>{character.species}</span>
+                <span>{character.status}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }

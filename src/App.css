@@ -51,6 +51,9 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  border: 10px solid #61dbfb;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .character-item {
