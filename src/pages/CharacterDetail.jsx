@@ -7,7 +7,7 @@ function CharacterDetail() {
   const [character, setCharacter] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // fetch the specific character by id
+  // fetch character by id
   useEffect(() => {
     fetch(`https://rickandmortyapi.com/api/character/${id}`)
       .then((res) => res.json())
