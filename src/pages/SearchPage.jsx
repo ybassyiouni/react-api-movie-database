@@ -7,10 +7,11 @@ function SearchPage() {
   const [characters, setCharacters] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [filter, setFilter] = useState("All")
 
   const navigate = useNavigate()
 
-  // fetch characters whenever the query changes
+  // fetch when query changes
   useEffect(() => {
     if (query === "") return
 
@@ -39,6 +40,21 @@ function SearchPage() {
     setQuery(search)
   }
 
+  function handleRandom() {
+    const randomId = Math.floor(Math.random() * 826) + 1
+    navigate(`/character/${randomId}`)
+  }
+
+  function getStatusColor(status) {
+    if (status === "Alive") return "#39ff14"
+    if (status === "Dead") return "red"
+    return "gray"
+  }
+
+  const filteredCharacters = characters.filter(
+    (c) => filter === "All" || c.status === filter
+  )
+
   return (
     <div className="page">
       <h1>Rick and Morty Character Search</h1>
@@ -51,14 +67,27 @@ function SearchPage() {
           onChange={(e) => setSearch(e.target.value)}
         />
         <button type="submit">Search</button>
+        <button type="button" className="random-btn" onClick={handleRandom}>Random</button>
       </form>
+
+      {characters.length > 0 && (
+        <div className="filter-bar">
+          <label>Filter by status: </label>
+          <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+            <option value="All">All</option>
+            <option value="Alive">Alive</option>
+            <option value="Dead">Dead</option>
+            <option value="unknown">Unknown</option>
+          </select>
+        </div>
+      )}
 
       {loading && <p>Loading...</p>}
       {error && <p className="error">{error}</p>}
 
-      {characters.length > 0 && (
+      {filteredCharacters.length > 0 && (
         <ul className="character-list">
-          {characters.map((character) => (
+          {filteredCharacters.map((character) => (
             <li
               key={character.id}
               className="character-item"
@@ -68,7 +97,13 @@ function SearchPage() {
               <div className="character-info">
                 <strong>{character.name}</strong>
                 <span>{character.species}</span>
-                <span>{character.status}</span>
+                <span>
+                  <span
+                    className="status-dot"
+                    style={{ backgroundColor: getStatusColor(character.status) }}
+                  ></span>
+                  {character.status}
+                </span>
               </div>
             </li>
           ))}
