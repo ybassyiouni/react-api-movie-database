@@ -1,21 +1,16 @@
-import { useState } from "react"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import SearchPage from "./pages/SearchPage"
+import CharacterDetail from "./pages/CharacterDetail"
+import "./App.css"
 
 function App() {
-  const [search, setSearch] = useState("")
-
   return (
-    <div>
-      <h1>Character Search</h1>
-
-      <input
-        type="text"
-        placeholder="Search character..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-
-      <button>Search</button>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<SearchPage />} />
+        <Route path="/character/:id" element={<CharacterDetail />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
