@@ -1,93 +1,90 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 
-function SearchPage() {
-  const [search, setSearch] = useState("")
-  const [query, setQuery] = useState("")
-  const [characters, setCharacters] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-  const [filter, setFilter] = useState("All")
+function SearchPage({ searchQuery, setSearchQuery, characterResults, setCharacterResults, selectedFilter, setSelectedFilter, onClearSearch }) {
+  const [searchInputValue, setSearchInputValue] = useState(searchQuery)
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
 
   const navigate = useNavigate()
 
-  // fetch when query changes
   useEffect(() => {
-    if (query === "") return
+    if (searchQuery === "") return
 
-    setLoading(true)
-    setError("")
+    setIsLoading(true)
+    setErrorMessage("")
 
-    fetch(`https://rickandmortyapi.com/api/character/?name=${query}`)
-      .then((res) => res.json())
+    fetch(`https://rickandmortyapi.com/api/character/?name=${searchQuery}`)
+      .then((response) => response.json())
       .then((data) => {
         if (data.results) {
-          setCharacters(data.results)
+          setCharacterResults(data.results)
         } else {
-          setCharacters([])
-          setError("No characters found.")
+          setCharacterResults([])
+          setErrorMessage("No characters found.")
         }
-        setLoading(false)
+        setIsLoading(false)
       })
-      .catch((err) => {
-        console.log(err)
-        setError("Something went wrong.")
-        setLoading(false)
+      .catch((error) => {
+        console.log(error)
+        setErrorMessage("Something went wrong.")
+        setIsLoading(false)
       })
-  }, [query])
+  }, [searchQuery])
 
-  function handleSearch() {
-    setQuery(search)
+  function handleSearchButton() {
+    setSearchQuery(searchInputValue)
   }
 
-  function handleRandom() {
+  function handleRandomCharacter() {
     const randomId = Math.floor(Math.random() * 826) + 1
     navigate(`/character/${randomId}`)
   }
 
-  function getStatusColor(status) {
+  function getStatusDotColor(status) {
     if (status === "Alive") return "#39ff14"
     if (status === "Dead") return "red"
     return "gray"
   }
 
-  const filteredCharacters = characters.filter(
-    (c) => filter === "All" || c.status === filter
+  const filteredCharacterList = characterResults.filter(
+    (character) => selectedFilter === "All" || character.status === selectedFilter
   )
 
   return (
     <div className="page">
       <h1>Rick and Morty Character Search</h1>
 
-      <form className="search-bar" onSubmit={(e) => { e.preventDefault(); handleSearch() }}>
+      <form className="search-bar" onSubmit={(event) => { event.preventDefault(); handleSearchButton() }}>
         <input
           type="text"
           placeholder="Search a character..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={searchInputValue}
+          onChange={(event) => setSearchInputValue(event.target.value)}
         />
         <button type="submit">Search</button>
-        <button type="button" className="random-btn" onClick={handleRandom}>Random</button>
+        <button type="button" className="random-btn" onClick={handleRandomCharacter}>Random</button>
       </form>
 
-      {characters.length > 0 && (
+      {characterResults.length > 0 && (
         <div className="filter-bar">
           <label>Filter by status: </label>
-          <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <select value={selectedFilter} onChange={(event) => setSelectedFilter(event.target.value)}>
             <option value="All">All</option>
             <option value="Alive">Alive</option>
             <option value="Dead">Dead</option>
             <option value="unknown">Unknown</option>
           </select>
+          <button className="clear-btn" onClick={onClearSearch}>Clear</button>
         </div>
       )}
 
-      {loading && <p>Loading...</p>}
-      {error && <p className="error">{error}</p>}
+      {isLoading && <p>Loading...</p>}
+      {errorMessage && <p className="error">{errorMessage}</p>}
 
-      {filteredCharacters.length > 0 && (
+      {filteredCharacterList.length > 0 && (
         <ul className="character-list">
-          {filteredCharacters.map((character) => (
+          {filteredCharacterList.map((character) => (
             <li
               key={character.id}
               className="character-item"
@@ -100,7 +97,7 @@ function SearchPage() {
                 <span>
                   <span
                     className="status-dot"
-                    style={{ backgroundColor: getStatusColor(character.status) }}
+                    style={{ backgroundColor: getStatusDotColor(character.status) }}
                   ></span>
                   {character.status}
                 </span>

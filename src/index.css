@@ -4,8 +4,7 @@
 
 body {
   margin: 0;
-  background-color: #121212;
-  background: radial-gradient(ellipse at 50% 0%, #0a3d0a 0%, #121212 65%);
+  background-color: #000;
   min-height: 100vh;
   color: white;
   font-family: Arial, sans-serif;

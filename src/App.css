@@ -49,6 +49,22 @@
   font-size: 0.9rem;
   color: #aaa;
 }
+.clear-btn {
+  margin-left: 12px;
+  background: none;
+  border: 1px solid #888;
+  color: #aaa;
+  padding: 3px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.clear-btn:hover {
+  border-color: red;
+  color: red;
+}
+
 .filter-bar select {
   margin-left: 8px;
   background-color: #1a1a1a;
